@@ -9,12 +9,9 @@ var ErrBadAmount = errors.New("сумма должна быть положите
 var ErrEmptyBanknotes = errors.New("не указаны номиналы")
 var ErrBadBanknote = errors.New("номинал должен быть положительным числом")
 
-type RowItem struct {
-	Val   int
-	Count int
-}
+type ExchangeRow []int
 
-func GetExchages(amount int, banknotes []int) ([][]RowItem, error) {
+func GetExchages(amount int, banknotes []int) ([]ExchangeRow, error) {
 	if amount <= 0 {
 		return nil, ErrBadAmount
 	}
@@ -29,7 +26,7 @@ func GetExchages(amount int, banknotes []int) ([][]RowItem, error) {
 	}
 	banknotesLen := len(banknotes)
 	counts := make([]int, banknotesLen)
-	var result [][]RowItem
+	var result []ExchangeRow
 
 	var tryExchage func(int, int)
 	tryExchage = func(amnt int, ix int) {
@@ -38,10 +35,10 @@ func GetExchages(amount int, banknotes []int) ([][]RowItem, error) {
 		for ; amountLeft >= 0; count, amountLeft = count+1, amountLeft-banknotes[ix] {
 			counts[ix] = count
 			if amountLeft == 0 { // разменяли без остатка, добавляем в ответ
-				row := make([]RowItem, 0, ix+1) // строка ответа будет не более ix+1
+				var row ExchangeRow
 				for i := 0; i <= ix; i++ {
-					if counts[i] > 0 {
-						row = append(row, RowItem{Val: banknotes[i], Count: counts[i]})
+					for bcount := 1; bcount <= counts[i]; bcount++ {
+						row = append(row, banknotes[i])
 					}
 				}
 				result = append(result, row)

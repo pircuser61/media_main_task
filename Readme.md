@@ -1,5 +1,11 @@
 # golang junior dev
 
+##
+
+./cmd/server - сервис
+./cmd/test_client - для отладки, делает один простой запрос
+./internal/exchanges - реализация алгоритма
+
 ## Задачи
 
 ### Exchanges

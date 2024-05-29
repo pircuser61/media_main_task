@@ -37,22 +37,10 @@ func rootHandler(log *slog.Logger, rw http.ResponseWriter, req *http.Request) {
 	log.Debug("result", slog.Any("data", result))
 
 	type Resp struct {
-		Exchanges [][]int `json:"exchanges"`
+		Exchanges []exchanges.ExchangeRow `json:"exchanges"`
 	}
 	var resp Resp
-	/*
-		можно было бы в GetExchanges сразу формировать ответ как в json
-		но мне формат не понравился, не хочтся подстраиваться под ручку
-	*/
-	for _, resultRow := range result {
-		respRow := make([]int, 0, len(resultRow))
-		for _, item := range resultRow {
-			for count := 0; count < item.Count; count++ {
-				respRow = append(respRow, item.Val)
-			}
-		}
-		resp.Exchanges = append(resp.Exchanges, respRow)
-	}
+	resp.Exchanges = result
 
 	//time.Sleep(time.Second * 30)
 	err = json.NewEncoder(rw).Encode(resp)
